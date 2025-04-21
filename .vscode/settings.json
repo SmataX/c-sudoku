@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "math.h": "c",
+        "unistd.h": "c",
+        "termios.h": "c",
+        "ratio": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
