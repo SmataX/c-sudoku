@@ -126,6 +126,10 @@ void initGame(BoardSize size, int difficulty) {
 
   freeBoard(board, size);
   freeBoard(gameplayBoard, size);
+
+  printf("\nPress Enter to continue...");
+  while (getchar() != '\n');
+  getchar();
 }
 
 int main(void) {
