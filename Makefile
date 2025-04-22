@@ -2,7 +2,7 @@ CC = clang
 CFLAGS = -Wall -Wextra -g
 SRC_DIR = src
 OBJ_DIR = build
-SRC = $(SRC_DIR)/main.c $(SRC_DIR)/board.c
+SRC = $(SRC_DIR)/*.c
 OUT = $(OBJ_DIR)/sudoku
 
 $(OUT): $(SRC)

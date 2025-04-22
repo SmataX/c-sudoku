@@ -6,7 +6,8 @@
         "math.h": "c",
         "unistd.h": "c",
         "termios.h": "c",
-        "ratio": "c"
+        "ratio": "c",
+        "string.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

@@ -4,51 +4,7 @@
 #include <time.h>
 #include <string.h>
 #include "board.h"
-
-// Get user input between given range
-int userInput(int min, int max) {
-  int input;
-  do {
-      if (scanf("%d", &input) != 1) {
-          while (getchar() != '\n');
-          printf("Invalid input. Try again.\n");
-      }
-  } while (input < min || input > max);
-
-  return input;
-}
-
-BoardSize selectBoardSize() {
-  printf("\n--- SELECT BOARD SIZE ---\n");
-  printf("[1] SMALL  (4x4)\n");
-  printf("[2] MEDIUM (9x9)\n");
-  printf("[3] LARGE  (16x16)\n");
-  printf("Select size: ");
-  int option = userInput(1, 3);
-
-  switch (option) {
-    case 1: return SMALL;
-    case 2: return MEDIUM;
-    case 3: return LARGE;
-    default: return MEDIUM;
-  }
-}
-
-int selectDifficulty() {
-  printf("\n--- SELECT DIFFICULTY ---\n");
-  printf("[1] EASY   (25%% empty)\n");
-  printf("[2] MEDIUM (50%% empty)\n");
-  printf("[3] HARD   (75%% empty)\n");
-  printf("Select difficulty: ");
-  int option = userInput(1, 3);
-
-  switch (option) {
-    case 1: return 25;
-    case 2: return 50;
-    case 3: return 75;
-    default: return 50;
-  }
-}
+#include "menu.h"
 
 // Display sudoku in the terminal
 void displayBoard(int** board, int** startBoard, BoardSize size, int cursorX, int cursorY) {
@@ -93,10 +49,11 @@ void displayBoard(int** board, int** startBoard, BoardSize size, int cursorX, in
 }
 
 // User input for moving cursor and entering numbers
-void moveCursor(int* cursorX, int* cursorY, int** board, int** startBoard, BoardSize size) {
+int moveCursor(int* cursorX, int* cursorY, int** board, int** startBoard, BoardSize size) {
   char userCommand[10];
   
   printf("Enter direction (w - up   s - down   a - left   d - right) or number\n");
+  printf("You can save your game with save command, to exit write exit \n");
   printf(" > ");
   scanf("%s", userCommand);
   
@@ -116,7 +73,12 @@ void moveCursor(int* cursorX, int* cursorY, int** board, int** startBoard, Board
       if (*cursorX < (int)size - 1) {
           (*cursorX)++;
       }
-  } else {
+  } else if (strcmp(userCommand, "save") == 0) {
+    return 1;
+  } else if (strcmp(userCommand, "exit") == 0) {
+    return 2;
+  }
+  else {
       if (startBoard[*cursorY][*cursorX] == 0) {
           int number = atoi(userCommand);
 
@@ -125,41 +87,104 @@ void moveCursor(int* cursorX, int* cursorY, int** board, int** startBoard, Board
           }
       }
   }
+
+  return 0;
 }
 
-int main(void) {
-  srand(time(NULL));
-
+void initGame(BoardSize size, int difficulty) {
+  // Cursor position
   int cursorX = 0, cursorY = 0;
 
-  BoardSize boardSize = selectBoardSize();
-  int emptyPercentage = selectDifficulty();
-
   // Generate and prepare board
-  int** board = generateBoard(boardSize);
-  emptyBoard(board, boardSize, emptyPercentage);
-  int** gameplayBoard = copyBoard(board, boardSize);
+  int** board = generateBoard(size);
+  emptyBoard(board, size, difficulty);
+  int** gameplayBoard = copyBoard(board, size);
 
   // Game loop
   while (1) {
     printf("\033[H\033[J"); // Clear terminal
-    displayBoard(gameplayBoard, board, boardSize, cursorX, cursorY);
-    moveCursor(&cursorX, &cursorY, gameplayBoard, board, boardSize);
+    displayBoard(gameplayBoard, board, size, cursorX, cursorY);
+    int option = moveCursor(&cursorX, &cursorY, gameplayBoard, board, size);
 
-    if (isBoardComplete(gameplayBoard, boardSize)) {
+    switch (option) {
+      // Save progress
+      case 1: break;
+      case 2: exit(0);
+      default: break;
+    }
+
+    if (isBoardComplete(gameplayBoard, size)) {
       break;
     }
   }
 
   // Message after completing sudoku
   printf("\033[H\033[J");
-  displayBoard(gameplayBoard, board, boardSize, cursorX, cursorY);
+  displayBoard(gameplayBoard, board, size, cursorX, cursorY);
   printf("You completed a sudoku!");
 
 
-  freeBoard(board, boardSize);
-  freeBoard(gameplayBoard, boardSize);
+  freeBoard(board, size);
+  freeBoard(gameplayBoard, size);
+}
 
+int main(void) {
+  srand(time(NULL));
+
+  // Sudoku settings
+  BoardSize boardSize = MEDIUM;
+  int emptyPercentage = 50;
+
+  // Game menu
+  int userInput, userInput2;
+
+  // Main loop
+  while (1) {
+    // Main Menu
+    printf("\033[H\033[J"); // Clear terminal
+    displayMainMenu();
+    printf("Enter your choice\n");
+    printf(" > ");
+    scanf("%d", &userInput);
+
+    switch (userInput) {
+      // Quit Game
+      case 0: exit(0);
+
+      // Start Game Menu
+      case 1: 
+        while(1) {
+          printf("\033[H\033[J"); // Clear terminal
+          displayStartMenu(&boardSize, &emptyPercentage);
+          printf("Enter your choice\n");
+          printf(" > ");
+          scanf("%d", &userInput2);
+  
+          switch (userInput2) {
+            case 0: 
+              goto exit_loop; 
+              break;
+            case 1: 
+              initGame(boardSize, emptyPercentage); 
+              break;
+            case 2: break;
+            case 3: 
+              printf("\033[H\033[J");
+              boardSize = selectBoardSize(); 
+              break;
+            case 4: 
+              printf("\033[H\033[J");
+              emptyPercentage = selectDifficulty(); 
+              break;
+          }
+        }
+        exit_loop: ;
+        break;
+        
+      // Stats Menu
+      case 2: break;
+    }
+  }
   
   return 0;
 }
