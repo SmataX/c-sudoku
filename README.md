@@ -7,5 +7,6 @@ Things to be implemented in the future:
 
 
 <img alt="meme" src="https://github.com/user-attachments/assets/8e4d7e0a-9bb9-485a-ab64-7f9754ffa25b" />
+
 Yup, I will start a new project instead of updating this one
 
