@@ -113,7 +113,7 @@ void initGame(BoardSize size, int difficulty, int load) {
     switch (option) {
       // Save progress
       case 1: 
-        saveToFile(board, gameplayBoard, size, difficulty);
+        saveToFile(board, gameplayBoard, size);
         break;
       case 2: exit(0);
       default: break;

@@ -164,10 +164,9 @@ void freeBoard(int** board, BoardSize size) {
 }
 
 // Save board data to file
-void saveToFile(int** board, int** gameBoard, BoardSize size, int difficulty) {
+void saveToFile(int** board, int** gameBoard, BoardSize size) {
   FILE* file = fopen("save.txt", "w");
   fprintf(file, "%i\n", (int)size);
-  // fprintf(file, "%i\n", difficulty);
 
   // Write empty board
   for (int i = 0; i < (int)size; i++) {
