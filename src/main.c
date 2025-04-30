@@ -91,7 +91,7 @@ int moveCursor(int* cursorX, int* cursorY, int** board, int** startBoard, BoardS
   return 0;
 }
 
-void initGame(BoardSize size, int difficulty) {
+void initGame(BoardSize size, int difficulty, int load) {
   // Cursor position
   int cursorX = 0, cursorY = 0;
 
@@ -99,6 +99,10 @@ void initGame(BoardSize size, int difficulty) {
   int** board = generateBoard(size);
   emptyBoard(board, size, difficulty);
   int** gameplayBoard = copyBoard(board, size);
+
+  if (load) {
+    loadFromFile(board, gameplayBoard, &size);
+  }
 
   // Game loop
   while (1) {
@@ -108,7 +112,9 @@ void initGame(BoardSize size, int difficulty) {
 
     switch (option) {
       // Save progress
-      case 1: break;
+      case 1: 
+        saveToFile(board, gameplayBoard, size, difficulty);
+        break;
       case 2: exit(0);
       default: break;
     }
@@ -169,9 +175,11 @@ int main(void) {
               goto exit_loop; 
               break;
             case 1: 
-              initGame(boardSize, emptyPercentage); 
+              initGame(boardSize, emptyPercentage, 0); 
               break;
-            case 2: break;
+            case 2: 
+              initGame(boardSize, emptyPercentage, 1);
+              break;
             case 3: 
               printf("\033[H\033[J");
               boardSize = selectBoardSize(); 

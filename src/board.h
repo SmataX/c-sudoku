@@ -37,4 +37,13 @@ int isBoardComplete(int** board, BoardSize size);
 // Free memory allocated for 2D array
 void freeBoard(int** board, BoardSize size);
 
+// Save board data to file
+void saveToFile(int** board, int** gameBoard, BoardSize size, int difficulty);
+
+// Loads Sudoku board data from "save.txt" into provided buffers
+void loadFromFile(int** board, int** gameBoard, BoardSize* size);
+
+// Convert string line to board
+void parseLine(char* line, int** board, int size);
+
 #endif

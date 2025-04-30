@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "board.h"
 
@@ -160,4 +161,71 @@ void freeBoard(int** board, BoardSize size) {
     free(board[i]);
   }
   free(board);
+}
+
+// Save board data to file
+void saveToFile(int** board, int** gameBoard, BoardSize size, int difficulty) {
+  FILE* file = fopen("save.txt", "w");
+  fprintf(file, "%i\n", (int)size);
+  // fprintf(file, "%i\n", difficulty);
+
+  // Write empty board
+  for (int i = 0; i < (int)size; i++) {
+    for (int j = 0; j < (int)size; j++) {
+      fprintf(file, "%i ", board[i][j]);
+    } 
+  }
+
+  fprintf(file, "\n");
+  
+  // Write user-filled board
+  for (int i = 0; i < (int)size; i++) {
+    for (int j = 0; j < (int)size; j++) {
+      fprintf(file, "%i ", gameBoard[i][j]);
+    } 
+  }
+
+  fclose(file);
+}
+
+// Loads Sudoku board data from "save.txt" into provided buffers
+void loadFromFile(int** board, int** gameBoard, BoardSize* size) {
+  FILE* file = fopen("save.txt", "r");
+
+  if (file == NULL) {
+    printf("No game saved!");
+
+    printf("\nPress Enter to continue...");
+    while (getchar() != '\n');
+    getchar();
+    exit(0);
+  }
+
+  char line[300];
+  if (fgets(line, 300, file)) {
+    *size = atoi(line);
+  }
+
+  if (fgets(line, 300, file)) {
+    parseLine(line, board, *size);
+  }
+
+  if (fgets(line, 300, file)) {
+    parseLine(line, gameBoard, *size);
+  }
+  fclose(file);
+}
+
+void parseLine(char* line, int** board, int size) {
+  char* token = strtok(line, " \n");
+  for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+          if (!token) {
+              printf("Error: Not enough values in line!\n");
+              exit(1);
+          }
+          board[i][j] = atoi(token);
+          token = strtok(NULL, " \n");
+      }
+  }
 }
