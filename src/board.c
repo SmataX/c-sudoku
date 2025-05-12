@@ -49,16 +49,30 @@ int isBoardValid(int** board, BoardSize size, int row, int col, int num) {
 }
 
 // Fill a subgrid with random valid values
-void fillSubgrid(int** board, BoardSize size, int row, int col) {
-  int num;
-  int subgridSize = sqrt(size);
-  for (int i = 0; i < subgridSize; i++) {
-    for (int j = 0; j < subgridSize; j++) {
-      do {
-        num = rand() % size + 1;
-      } while (!isSubgridValid(board, size, row, col, num));
-      board[row + i][col + j] = num;
-    }
+// In board.c
+void fillSubgrid(int** board, BoardSize size, int startRow, int startCol) {
+  int n = (int)size;
+  int subgridSize = (n == 4) ? 2 : (n == 9) ? 3 : 4;
+  int nums[n];
+  for (int i = 0; i < n; i++) nums[i] = i + 1;
+
+  // Shuffle numbers
+  for (int i = 0; i < n; i++) {
+      int j = rand() % n;
+      int temp = nums[i];
+      nums[i] = nums[j];
+      nums[j] = temp;
+  }
+
+  int idx = 0;
+  for (int i = startRow; i < startRow + subgridSize; i++) {
+      for (int j = startCol; j < startCol + subgridSize; j++) {
+          if (board[i][j] == 0) {  // Only fill empty cells
+              board[i][j] = nums[idx++];
+          } else {
+              idx++;  // Skip fixed cells
+          }
+      }
   }
 }
 
@@ -227,4 +241,16 @@ void parseLine(char* line, int** board, int size) {
           token = strtok(NULL, " \n");
       }
   }
+}
+
+int** generateFixedMask(int** puzzle, BoardSize size) {
+  int n = (int)size;
+  int** mask = (int**)malloc(n * sizeof(int*));
+  for (int i = 0; i < n; i++) {
+      mask[i] = (int*)malloc(n * sizeof(int));
+      for (int j = 0; j < n; j++) {
+          mask[i][j] = (puzzle[i][j] != 0) ? 1 : 0;
+      }
+  }
+  return mask;
 }

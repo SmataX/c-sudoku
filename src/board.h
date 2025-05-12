@@ -46,4 +46,6 @@ void loadFromFile(int** board, int** gameBoard, BoardSize* size);
 // Convert string line to board
 void parseLine(char* line, int** board, int size);
 
+int** generateFixedMask(int** puzzle, BoardSize size);
+
 #endif

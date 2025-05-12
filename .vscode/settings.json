@@ -7,7 +7,8 @@
         "unistd.h": "c",
         "termios.h": "c",
         "ratio": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "__locale": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

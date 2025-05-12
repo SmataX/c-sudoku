@@ -5,7 +5,7 @@
 void displayMainMenu() {
     printf("----- SUDOKU -----\n");
     printf("[1] START\n");
-    printf("[2] INFO\n");
+    printf("[2] SOLVER\n");
     printf("[0] QUIT\n");
 }
 

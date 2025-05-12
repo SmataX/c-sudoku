@@ -5,6 +5,7 @@
 #include <string.h>
 #include "board.h"
 #include "menu.h"
+#include "solver.h"
 
 // Display sudoku in the terminal
 void displayBoard(int** board, int** startBoard, BoardSize size, int cursorX, int cursorY) {
@@ -193,8 +194,23 @@ int main(void) {
         exit_loop: ;
         break;
         
-      // Stats Menu
-      case 2: break;
+      // Solver
+      case 2: {
+        srand(1);
+        int** board = generateBoard(MEDIUM);
+        emptyBoard(board, MEDIUM, 50);
+        int** solution = solveSimulatedAnnealing(board, MEDIUM, 10, 0.999, 10000);
+        printf("Solution:\n");
+        displayBoard(solution, board, MEDIUM, -1, -1);
+
+        printf("\nPress Enter to continue...");
+        while (getchar() != '\n');
+        getchar();
+    
+        freeBoard(board, MEDIUM);
+        freeBoard(solution, MEDIUM);
+        break;
+      }
     }
   }
   
