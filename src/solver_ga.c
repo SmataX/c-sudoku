@@ -64,8 +64,8 @@ int computeFitness(int **board, BoardSize size) {
 // Initialize an individual with the puzzle and random permutations
 void initializeIndividual(Individual *ind, int **puzzle, int **fixedMask, BoardSize size) {
     int n = size;
-    ind->board = createBoard(size);
-    copyBoardTo(ind->board, puzzle, size);
+    ind->board = generateBoard(size);
+    ind->board = copyBoard(puzzle, size);
 
     for (int i = 0; i < n; i++) {
         int *present = (int*)calloc(n + 1, sizeof(int));
@@ -207,8 +207,8 @@ int** solveSudokuGA(int** puzzle, BoardSize size) {
             Individual parent2 = tournamentSelection(population);
 
             Individual child1, child2;
-            child1.board = createBoard(size);
-            child2.board = createBoard(size);
+            child1.board = generateBoard(size);
+            child2.board = generateBoard(size);
 
             if ((double)rand() / RAND_MAX < CROSSOVER_RATE) {
                 crossover(&parent1, &parent2, &child1, &child2, size);
@@ -321,6 +321,7 @@ int main() {
 
     if (solution != NULL) {
         printf("\nSolution:\n");
+        printf("%i\n", isBoardComplete(solution, size));
         printBoard(solution, size);
         freeBoard(solution, size);
     } else {
